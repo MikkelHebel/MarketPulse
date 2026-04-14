@@ -1,0 +1,61 @@
+services:
+  laravel:
+    build:
+      context: .
+      dockerfile: ./docker/Laravel.Dockerfile
+    volumes:
+      - ./MarketPulse:/var/www/html
+      - ./.env:/var/www/html/.env
+    env_file:
+      - .env
+    networks:
+      - internal
+      - external
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - ./MarketPulse:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+    networks:
+      - external
+    depends_on:
+      - laravel
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laravel -d app"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  redis:
+    image: redis:8.4-alpine
+    networks:
+      - internal
+
+networks:
+  internal:
+  external:
+
+volumes:
+  postgres-data:

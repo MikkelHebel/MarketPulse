@@ -1,0 +1,19 @@
+FROM php:8.4-cli
+
+RUN apt update && apt install -y zip unzip git libpq-dev libssl-dev \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && pecl install redis \
+    && docker-php-ext-enable redis
+
+RUN apt install -y nodejs npm
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY MarketPulse/composer.json MarketPulse/composer.lock ./
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
