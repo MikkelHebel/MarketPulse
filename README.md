@@ -21,8 +21,8 @@ To meet the exam requirements, the following pattern will be implemented:
 ### Phase 1: Core setup & infrastructure
 - [x] Initialize Laravel project.
 - [x] Setup database migrations for `snapshots`, `tickers`, and `sentiment_scores`
-- [ ] Configure `Guzzle` for API communication
-- [ ] Setup Laravel scheduler to automate data fetching
+- [x] Configure `Guzzle` for API communication
+- [x] Setup Laravel scheduler to automate data fetching
 
 ### Phase 2: Data Acquisition
 - [ ] Implement `StockStrategy` (Fetching S&P 500, Nasdaq, MAG-7 stocks)
