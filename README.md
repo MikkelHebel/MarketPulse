@@ -19,7 +19,7 @@ To meet the exam requirements, the following pattern will be implemented:
 
 ### Phase 1: Core setup & infrastructure
 - [x] Initialize Laravel project.
-- [ ] Setup database migrations for `snapshots`, `tickers`, and `sentiment_scores`
+- [x] Setup database migrations for `snapshots`, `tickers`, and `sentiment_scores`
 - [ ] Configure `Guzzle` for API communication
 - [ ] Setup Laravel scheduler to automate data fetching
 
