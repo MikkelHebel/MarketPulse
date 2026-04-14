@@ -14,6 +14,7 @@ To meet the exam requirements, the following pattern will be implemented:
 1. **Strategy Pattern:** - `DataSourceInterface` to handle different API integrations
   - Enables easy expansion if more APIs (e.g. X/Twitter) are added later
 2. **Observer Pattern:** - `MarketObserver` that triggers events when a hits a specific metric (Volatility threshold or sentiment peaks)
+3. **Dependency Injection Pattern:** - `StockStrategy` & `RedditStrategy` both uses Dependency Injection. To create greater decoupling and get inversion of control and greater seperation of concerns.
 
 ## Development Phases
 
