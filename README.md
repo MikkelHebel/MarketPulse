@@ -25,7 +25,7 @@ To meet the exam requirements, the following pattern will be implemented:
 - [x] Setup Laravel scheduler to automate data fetching
 
 ### Phase 2: Data Acquisition
-- [ ] Implement `StockStrategy` (Fetching S&P 500, Nasdaq, MAG-7 stocks)
+- [x] Implement `StockStrategy` (Fetching S&P 500, Nasdaq, MAG-7 stocks)
 - [ ] Implement `RedditStrategy` (Fetching r/wallstreetbets hot posts)
 - [ ] Develop a simple Sentiment Analyzer service (Keyword matching: "bullish", "bearish", etc.)
 

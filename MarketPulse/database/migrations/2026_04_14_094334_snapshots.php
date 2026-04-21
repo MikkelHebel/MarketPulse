@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('snapshots', function (Blueprint $table) {
             $table->id();
-            $table->integer('price');
+            $table->decimal('price', 10, 2);
             $table->foreignId('ticker_id')->constrained('tickers');
             $table->timestamp('timestamp')->index();
         });
