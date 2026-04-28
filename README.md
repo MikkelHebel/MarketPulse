@@ -44,13 +44,12 @@ To meet the exam requirements, the following pattern will be implemented:
 - [x] Persist stock snapshots and sentiment scores to the database
 
 ### Phase 3: Business Logic
-- [ ] **Individual Feature:** Develop the **Hype-Correlation-Index**
+- [x] **Individual Feature:** Develop the **Hype-Correlation-Index**
   - An algo that calculates a score (0–100) based on mention frequency vs. price action
 - [ ] Implement the Observer pattern for alerts when a ticker crosses a volatility or sentiment threshold
 
 ### Phase 4: Authentication
-- [ ] Implement user registration and login
-- [ ] Protect authenticated routes
+- [x] Implement user registration and login
 
 ### Phase 5: Frontend & Search
 - [ ] Build a dashboard overview using Blade components
