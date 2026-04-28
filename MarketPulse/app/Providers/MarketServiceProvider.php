@@ -23,7 +23,7 @@ class MarketServiceProvider extends ServiceProvider
 
         $this->app->bind(RedditStrategy::class, function () {
             return new RedditStrategy(new Client([
-                'base_uri' => 'https://reddit.com',
+                'base_uri' => 'https://oauth.reddit.com',
                 'timeout' => 5.0,
             ]));
         });

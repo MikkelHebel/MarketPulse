@@ -26,8 +26,8 @@ To meet the exam requirements, the following pattern will be implemented:
 
 ### Phase 2: Data Acquisition
 - [x] Implement `StockStrategy` (Fetching S&P 500, Nasdaq, MAG-7 stocks)
-- [ ] Implement `RedditStrategy` (Fetching r/wallstreetbets hot posts)
-- [ ] Develop a simple Sentiment Analyzer service (Keyword matching: "bullish", "bearish", etc.)
+- [x] Implement `RedditStrategy` (Fetching r/wallstreetbets hot posts)
+- [x] Develop a simple Sentiment Analyzer service (Keyword matching: "bullish", "bearish", etc.)
 
 ### Phase 3: Business Logic
 - [ ] **Individual Feature:** Develop the **Hype-Correlation-Index**.
@@ -38,6 +38,7 @@ To meet the exam requirements, the following pattern will be implemented:
 - [ ] Build a dashboard overview using Blade components.
 - [ ] Integrate **Chart.js** to visualize the correlation between Reddit mentions and stock price movement
 - [ ] Ensure the UI supports viewing historical snapshots
+- [ ] Create tests
 
 ### Phase 5:
 - [ ] Create Class Diagrams for Strategy and Observer patterns
