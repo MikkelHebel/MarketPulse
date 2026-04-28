@@ -7,8 +7,10 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use App\Services\StockStrategy;
 use App\Services\RedditStrategy;
+use App\Services\SentimentAnalyzer;
 use App\Models\Ticker;
 use App\Models\Snapshot;
+use App\Models\SentimentScore;
 
 #[Signature('app:fetch-data')]
 #[Description('Fetch stock and Reddit data')]
@@ -17,7 +19,7 @@ class FetchData extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StockStrategy $stock, RedditStrategy $reddit): void
+    public function handle(StockStrategy $stock, RedditStrategy $reddit, SentimentAnalyzer $analyzer): void
     {
         $results = $stock->fetch();
 
@@ -37,6 +39,17 @@ class FetchData extends Command
             ]);
         }
 
-        $reddit->fetch();
+        $posts = $reddit->fetch();
+        $scores = $analyzer->analyze($posts);
+
+        foreach($scores as $symbol => $score) {
+            $ticker = Ticker::firstOrCreate(['ticker' => $symbol]);
+
+            SentimentScore::create([
+                'ticker_id' => $ticker->id,
+                'score'     => $score,
+                'timestamp' => now(),
+            ]);
+        }
     }
 }
