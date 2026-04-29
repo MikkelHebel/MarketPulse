@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\StockStrategy;
 use App\Services\RedditStrategy;
+use App\Models\Snapshot;
+use App\Observers\SnapshotObserver;
 use GuzzleHttp\Client;
 
 class MarketServiceProvider extends ServiceProvider
@@ -34,6 +36,6 @@ class MarketServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Snapshot::observe(SnapshotObserver::class);
     }
 }

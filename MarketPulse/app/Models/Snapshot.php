@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Snapshot extends Model
 {
-    protected $timestamps = false;
+    public $timestamps = false;
     protected $fillable = ['price', 'ticker_id', 'timestamp'];
 
     public function ticker()
