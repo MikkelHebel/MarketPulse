@@ -87,5 +87,11 @@ HCI = (sentiment_momentum + price_momentum) / 2
 
 The HCI is calculated per ticker after each data fetch and passed to the Observer, which triggers an alert if the score exceeds 75 (hype peak) or falls below 25 (panic/crash signal).
 
+## Architecture Decisions
+
+### Why polling endpoints are in `web.php` and not `api.php`
+
+Laravel's `api.php` is stateless by default and expects token-based authentication (e.g. Sanctum or Passport). This project uses session-based authentication built on the `web` middleware stack (`Auth::attempt()`, cookies, CSRF). Placing the polling endpoints (`/chart/data`, `/notifications/poll`) in `web.php` means they automatically inherit session auth and the `auth` middleware — no extra token setup required. If a separate mobile app or SPA with token auth were added in the future, those routes would move to `api.php`.
+
 ## Snapshot frequency
 - **Stocks & WSB:** Every minute

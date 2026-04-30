@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Snapshot;
 use App\Models\UserThreshold;
 use App\Services\HypeCorrelationService;
+use App\Notifications\HciAlertNotification;
 
 class SnapshotObserver
 {
@@ -20,9 +21,9 @@ class SnapshotObserver
 
         foreach ($thresholds as $threshold) {
             if ($hci >= $threshold->hci_high) {
-
+                $threshold->user->notify(new HciAlertNotification($ticker, $hci, 'hype'));
             } elseif ($hci <= $threshold->hci_low) {
-
+                $threshold->user->notify(new HciAlertNotification($ticker, $hci, 'crash'));
             }
         }
     }
