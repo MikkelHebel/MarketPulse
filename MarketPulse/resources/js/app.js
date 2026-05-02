@@ -5,14 +5,20 @@ Chart.register(...registerables)
 const COLORS = ['#f97316','#3b82f6','#10b981','#8b5cf6','#ef4444','#f59e0b','#06b6d4','#ec4899','#84cc16'];
 
 let priceChart = null;
+let filtersRendered = false;
 
 async function fetchData() {
     const res = await fetch('/chart/data');
     const tickers = await res.json();
 
     renderChart(tickers);
-    renderTable(tickers);
 
+    if (!filtersRendered) {
+        renderFilters(tickers);
+        filtersRendered = true;
+    }
+
+    renderTable(tickers);
     document.getElementById('last-updated').textContent = new Date().toLocaleString();
 }
 
@@ -41,6 +47,9 @@ function renderChart(tickers) {
     if (priceChart) {
         priceChart.data.labels = labels;
         priceChart.data.datasets = datasets;
+        document.querySelectorAll('.ticker-filter').forEach(cb => {
+            priceChart.getDatasetMeta(parseInt(cb.dataset.index)).hidden = !cb.checked;
+        });
         priceChart.update();
     } else {
         priceChart = new Chart(ctx, {
@@ -48,17 +57,59 @@ function renderChart(tickers) {
             data: { labels, datasets },
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } },
-                scales: {
-                    y: { ticks: { callback: v => v + '%' } }
-                }
+                plugins: { legend: { display: false } },
+                scales: { y: { ticks: { callback: v => v + '%' } } }
             }
         });
     }
 }
 
-function renderTable(tickers) {
+function renderFilters(tickers) {
+    const container = document.getElementById('chart-filters');
+    if (!container) return;
 
+    const checkboxes = tickers.map((ticker, i) => `
+        <label class="flex items-center gap-1.5 cursor-pointer text-sm select-none">
+            <input type="checkbox" checked data-index="${i}" class="ticker-filter cursor-pointer">
+            <span class="font-medium" style="color:${COLORS[i % COLORS.length]}">${ticker.ticker}</span>
+        </label>
+    `).join('');
+
+    container.innerHTML = `
+        <div class="flex items-center gap-3 flex-wrap mt-4 pt-4 border-t border-gray-100">
+            <button id="filter-select-all" class="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 cursor-pointer">Select All</button>
+            <button id="filter-deselect-all" class="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 cursor-pointer">Deselect All</button>
+            <span class="text-gray-200 select-none">|</span>
+            ${checkboxes}
+        </div>
+    `;
+
+    container.querySelectorAll('.ticker-filter').forEach(cb => {
+        cb.addEventListener('change', () => toggleDataset(parseInt(cb.dataset.index), cb.checked));
+    });
+
+    document.getElementById('filter-select-all').addEventListener('click', () => {
+        container.querySelectorAll('.ticker-filter').forEach(cb => {
+            cb.checked = true;
+            toggleDataset(parseInt(cb.dataset.index), true);
+        });
+    });
+
+    document.getElementById('filter-deselect-all').addEventListener('click', () => {
+        container.querySelectorAll('.ticker-filter').forEach(cb => {
+            cb.checked = false;
+            toggleDataset(parseInt(cb.dataset.index), false);
+        });
+    });
+}
+
+function toggleDataset(index, visible) {
+    if (!priceChart) return;
+    priceChart.getDatasetMeta(index).hidden = !visible;
+    priceChart.update();
+}
+
+function renderTable(tickers) {
     const tbody = document.getElementById('ticker-table');
     if (!tbody) return;
 

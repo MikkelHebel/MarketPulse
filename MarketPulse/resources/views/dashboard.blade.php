@@ -14,6 +14,7 @@
         <div class="col-span-3 rounded-xl border border-gray-200 shadow-sm p-6">
             <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Price Movement (% change)</h2>
             <canvas id="price-chart"></canvas>
+            <div id="chart-filters"></div>
         </div>
 
         {{-- Ticker table --}}

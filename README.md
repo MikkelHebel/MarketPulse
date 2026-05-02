@@ -28,6 +28,7 @@ To meet the exam requirements, the following pattern will be implemented:
 8. The system shall support viewing historical snapshots of price and sentiment data
 9. Users shall be able to register and log in to the application
 10. Authenticated users shall be able to search for a specific stock ticker and view its dedicated data page
+11. Users shall be able to toggle individual tickers on/off in a chart with "Select All" and "Deselect All" controls. The filter state persists across polling updates
 
 ## Development Phases
 
@@ -51,12 +52,13 @@ To meet the exam requirements, the following pattern will be implemented:
 ### Phase 4: Authentication
 - [x] Implement user registration and login
 
-### Phase 5: Frontend & Search
+### Phase 5: Frontend
 - [x] Build a dashboard overview using Blade components
-- [ ] Integrate **Chart.js** to visualize the correlation between Reddit mentions and stock price movement
+- [x] Integrate **Chart.js** to visualize the correlation between Reddit mentions and stock price movement
+- [x] Ensure the UI supports viewing historical snapshots
+- [x] Chart ticker filter
 - [ ] Notifications
-- [ ] Ensure the UI supports viewing historical snapshots
-- [ ] Implement ticker search page for authenticated users
+- [ ] Implement ticker search for authenticated users
 
 ### Phase 6: Testing
 - [ ] Write feature tests for data fetching and persistence

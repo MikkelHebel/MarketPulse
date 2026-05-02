@@ -33,7 +33,7 @@ class MarketServiceProvider extends ServiceProvider
 
         $this->app->bind(RedditScraperStrategy::class, function () {
             return new RedditScraperStrategy(new Client([
-                'base_uri' => 'https://reddit.com',
+                'base_uri' => 'https://www.reddit.com',
                 'timeout' => 10.0,
             ]));
         });
