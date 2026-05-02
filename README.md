@@ -54,6 +54,7 @@ To meet the exam requirements, the following pattern will be implemented:
 ### Phase 5: Frontend & Search
 - [x] Build a dashboard overview using Blade components
 - [ ] Integrate **Chart.js** to visualize the correlation between Reddit mentions and stock price movement
+- [ ] Notifications
 - [ ] Ensure the UI supports viewing historical snapshots
 - [ ] Implement ticker search page for authenticated users
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SentimentScore extends Model
 {
-    protected $timestamps = false;
+    public $timestamps = false;
     protected $fillable = ['score', 'ticker_id', 'timestamp'];
 
     public function ticker()

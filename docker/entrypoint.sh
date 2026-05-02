@@ -36,7 +36,7 @@ npm run build
 
 # Run database migrations
 echo "[INFO] Running database migrations..."
-php artisan migrate:fresh
+php artisan migrate --force
 php artisan db:seed
 
 # Create Pest cache (used for testing)

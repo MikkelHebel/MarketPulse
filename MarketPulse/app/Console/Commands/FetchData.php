@@ -39,17 +39,21 @@ class FetchData extends Command
             ]);
         }
 
-        $posts = $reddit->fetch();
-        $scores = $analyzer->analyze($posts);
+        try {
+            $posts = $reddit->fetch();
+            $scores = $analyzer->analyze($posts);
 
-        foreach($scores as $symbol => $score) {
-            $ticker = Ticker::firstOrCreate(['ticker' => $symbol]);
+            foreach($scores as $symbol => $score) {
+                $ticker = Ticker::firstOrCreate(['ticker' => $symbol]);
 
-            SentimentScore::create([
-                'ticker_id' => $ticker->id,
-                'score'     => $score,
-                'timestamp' => now(),
-            ]);
+                SentimentScore::create([
+                    'ticker_id' => $ticker->id,
+                    'score'     => $score,
+                    'timestamp' => now(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Reddit fetch failed: ' . $e->getMessage());
         }
     }
 }

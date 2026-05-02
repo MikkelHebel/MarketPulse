@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ticker extends Model
 {
-    protected $timestamps = false;
+    public $timestamps = false;
     protected $fillable = ['ticker'];
 
     public function snapshots()
@@ -14,7 +14,7 @@ class Ticker extends Model
         return $this->hasMany(Snapshot::class);
     }
 
-    public function sentimentScore()
+    public function sentimentScores()
     {
         return $this->hasMany(SentimentScore::class);
     }
