@@ -46,13 +46,13 @@ To meet the exam requirements, the following pattern will be implemented:
 ### Phase 3: Business Logic
 - [x] **Individual Feature:** Develop the **Hype-Correlation-Index**
   - An algo that calculates a score (0–100) based on mention frequency vs. price action
-- [ ] Implement the Observer pattern for alerts when a ticker crosses a volatility or sentiment threshold
+- [x] Implement the Observer pattern for alerts when a ticker crosses a volatility or sentiment threshold
 
 ### Phase 4: Authentication
 - [x] Implement user registration and login
 
 ### Phase 5: Frontend & Search
-- [ ] Build a dashboard overview using Blade components
+- [x] Build a dashboard overview using Blade components
 - [ ] Integrate **Chart.js** to visualize the correlation between Reddit mentions and stock price movement
 - [ ] Ensure the UI supports viewing historical snapshots
 - [ ] Implement ticker search page for authenticated users
