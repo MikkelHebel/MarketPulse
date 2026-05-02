@@ -57,7 +57,7 @@ To meet the exam requirements, the following pattern will be implemented:
 - [x] Integrate **Chart.js** to visualize the correlation between Reddit mentions and stock price movement
 - [x] Ensure the UI supports viewing historical snapshots
 - [x] Chart ticker filter
-- [ ] Notifications
+- [x] Notifications
 - [ ] Implement ticker search for authenticated users
 
 ### Phase 6: Testing
