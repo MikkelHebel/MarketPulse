@@ -22,10 +22,11 @@ class DashboardController extends Controller
             'snapshots'       => fn($q) => $q->latest('timestamp')->limit(60),
             'sentimentScores' => fn($q) => $q->latest('timestamp')->limit(60),
         ])->get()->map(fn($ticker) => [
-            'ticker' => $ticker->ticker,
-            'price' => $ticker->snapshots->first()?->price,
+            'ticker'    => $ticker->ticker,
+            'price'     => $ticker->snapshots->first()?->price,
             'sentiment' => $ticker->sentimentScores->first()?->score ?? '--',
-            'hci' => $this->hype->calculate($ticker->ticker),
+            'hci'       => $this->hype->calculate($ticker->ticker),
+            'snapshots' => $ticker->snapshots,
         ]);
 
      return response()->json($tickers);

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\StockStrategy;
 use App\Services\RedditStrategy;
+use App\Services\RedditScraperStrategy;
 use App\Models\Snapshot;
 use App\Observers\SnapshotObserver;
 use GuzzleHttp\Client;
@@ -27,6 +28,13 @@ class MarketServiceProvider extends ServiceProvider
             return new RedditStrategy(new Client([
                 'base_uri' => 'https://oauth.reddit.com',
                 'timeout' => 5.0,
+            ]));
+        });
+
+        $this->app->bind(RedditScraperStrategy::class, function () {
+            return new RedditScraperStrategy(new Client([
+                'base_uri' => 'https://reddit.com',
+                'timeout' => 10.0,
             ]));
         });
     }

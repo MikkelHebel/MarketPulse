@@ -21,11 +21,11 @@ function renderChart(tickers) {
     if (!ctx) return;
 
     const datasets = tickers.map((ticker, i) => {
-        const prices = ticker.snapshots.map(s => s.price).reverse();
+        const prices = ticker.snapshots.map(s => parseFloat(s.price)).reverse();
         const base = prices[0] || 1;
         return {
             label: ticker.ticker,
-            data: prices.map(p => (((p - base) / base) * 100).toFixed(2)),
+            data: prices.map(p => parseFloat(((p - base) / base * 100).toFixed(2))),
             borderColor: COLORS[i % COLORS.length],
             backgroundColor: 'transparent',
             borderWidth: 2,

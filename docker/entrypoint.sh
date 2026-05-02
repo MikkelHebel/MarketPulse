@@ -37,11 +37,13 @@ npm run build
 # Run database migrations
 echo "[INFO] Running database migrations..."
 php artisan migrate --force
-php artisan db:seed
 
 # Create Pest cache (used for testing)
 echo "[INFO] Creating Pest cache directory..."
 mkdir -p .pest/cache
 chmod 775 .pest/cache
+
+echo "[INFO] Starting scheduler..."
+php artisan schedule:work &
 
 exec php artisan serve --host=0.0.0.0 --port=8000

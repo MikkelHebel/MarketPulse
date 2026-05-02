@@ -7,6 +7,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use App\Services\StockStrategy;
 use App\Services\RedditStrategy;
+use App\Services\RedditScraperStrategy;
 use App\Services\SentimentAnalyzer;
 use App\Models\Ticker;
 use App\Models\Snapshot;
@@ -19,7 +20,7 @@ class FetchData extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StockStrategy $stock, RedditStrategy $reddit, SentimentAnalyzer $analyzer): void
+    public function handle(StockStrategy $stock, RedditStrategy $reddit, RedditScraperStrategy $redditScraper, SentimentAnalyzer $analyzer): void
     {
         $results = $stock->fetch();
 
@@ -41,19 +42,21 @@ class FetchData extends Command
 
         try {
             $posts = $reddit->fetch();
-            $scores = $analyzer->analyze($posts);
 
-            foreach($scores as $symbol => $score) {
-                $ticker = Ticker::firstOrCreate(['ticker' => $symbol]);
-
-                SentimentScore::create([
-                    'ticker_id' => $ticker->id,
-                    'score'     => $score,
-                    'timestamp' => now(),
-                ]);
-            }
         } catch (\Exception $e) {
-            \Log::warning('Reddit fetch failed: ' . $e->getMessage());
+            \Log::warning('Reddit OAuth fetch failed, using scraper fallback: ' . $e->getMessage());
+            $posts = $redditScraper->fetch();
+        }
+        $scores = $analyzer->analyze($posts);
+
+        foreach($scores as $symbol => $score) {
+            $ticker = Ticker::firstOrCreate(['ticker' => $symbol]);
+
+            SentimentScore::create([
+                'ticker_id' => $ticker->id,
+                'score'     => $score,
+                'timestamp' => now(),
+            ]);
         }
     }
 }

@@ -94,5 +94,9 @@ The HCI is calculated per ticker after each data fetch and passed to the Observe
 
 Laravel's `api.php` is stateless by default and expects token-based authentication (e.g. Sanctum or Passport). This project uses session-based authentication built on the `web` middleware stack (`Auth::attempt()`, cookies, CSRF). Placing the polling endpoints (`/chart/data`, `/notifications/poll`) in `web.php` means they automatically inherit session auth and the `auth` middleware — no extra token setup required. If a separate mobile app or SPA with token auth were added in the future, those routes would move to `api.php`.
 
+### Reddit scraper fallback
+  `RedditStrategy` uses the OAuth API (requires credentials). If the API call fails (e.g. credentials not configured), `FetchData` catches the exception and falls back to
+  `RedditScraperStrategy`, which hits the public JSON endpoint at `reddit.com` with a browser-like User-Agent. This keeps data flowing during development before API credentials are approved.
+
 ## Snapshot frequency
 - **Stocks & WSB:** Every minute
