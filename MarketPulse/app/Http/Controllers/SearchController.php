@@ -20,10 +20,9 @@ class SearchController extends Controller
         ]);
 
         $ticker = strtoupper(trim($request->ticker));
-        $tickerModel = Ticker::where('ticker', $ticker)->first();
-        if ($tickerModel) {
-            RecentSearch::create(['ticker_id' => $tickerModel->id]);
-        }
+        $tickerModel = Ticker::firstOrCreate(['ticker' => $ticker]);
+
+        RecentSearch::create(['ticker_id' => $tickerModel->id]);
 
         return view('search', ['ticker' => $ticker]);
     }

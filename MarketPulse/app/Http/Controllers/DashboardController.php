@@ -7,14 +7,15 @@ use Illuminate\Http\JsonResponse;
 use App\Models\Ticker;
 use App\Models\RecentSearch;
 use App\Services\HypeCorrelationService;
+use App\Services\StockStrategy;
 
 class DashboardController extends Controller
 {
-    public function __construct(private HypeCorrelationService $hype) {}
+    public function __construct(private HypeCorrelationService $hype, private StockStrategy $stocks) {}
 
     public function index()
     {
-        $recentSearches = RecentSearch::with('ticker')->latest('searched_at')->limit(25)->get();
+        $recentSearches = RecentSearch::with('ticker')->latest()->limit(25)->get();
 
         return view('dashboard', compact('recentSearches'));
     }
@@ -24,7 +25,9 @@ class DashboardController extends Controller
         $tickers = Ticker::with([
             'snapshots'       => fn($q) => $q->latest('timestamp')->limit(60),
             'sentimentScores' => fn($q) => $q->latest('timestamp')->limit(60),
-        ])->get()->map(fn($ticker) => [
+        ])->whereIn('ticker', $this->stocks->tickers())
+            ->get()
+            ->map(fn($ticker) => [
             'ticker'    => $ticker->ticker,
             'price'     => $ticker->snapshots->first()?->price,
             'sentiment' => $ticker->sentimentScores->first()?->score ?? '--',

@@ -18,6 +18,11 @@ class StockStrategy implements DataSourceInterface
 
     public function __construct(private Client $client) {}
 
+    public function tickers(): array
+    {
+        return $this->tickers;
+    }
+
     public function fetch(): array
     {
         $results = [];

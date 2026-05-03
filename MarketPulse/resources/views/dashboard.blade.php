@@ -67,7 +67,7 @@
                                 @endguest
                             </td>
                             <td class="px-6 py-3 text-right text-gray-400">
-                                {{ $search->searched_at->diffForHumans() }}
+                                {{ $search->created_at->diffForHumans() }}
                             </td>
                         </tr>
                     @endforeach
