@@ -61,12 +61,13 @@ To meet the exam requirements, the following pattern will be implemented:
 - [x] Ensure the UI supports viewing historical snapshots
 - [x] Chart ticker filter
 - [x] Notifications
+- [x] Show recent searches
 - [ ] Implement ticker search for authenticated users
 - [ ] Create a Watchlist users can add up to 3 custom tickers, the scheduler fetches their data alongside defaults
 
 ### Phase 6: Testing
 - [ ] Write feature tests for data fetching and persistence
-- [ ] Write login tests
+- [x] Write login tests
 - [ ] Write unit tests for `SentimentAnalyzer` and `Hype-Correlation-Index`
 
 ### Phase 7: Finalization
