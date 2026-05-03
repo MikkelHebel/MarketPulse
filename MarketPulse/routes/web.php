@@ -19,7 +19,8 @@ Route::get('/chart/data', [DashboardController::class, 'chartData']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/thresholds', [ThresholdController::class, 'index'])->name('thresholds');
-    Route::post('/thresholds', [ThresholdController::class, 'upsert'])->name('thresholds.upsert');
+    Route::post('/thresholds', [ThresholdController::class, 'store'])->name('thresholds.store');
+    Route::delete('/thresholds/{threshold}', [ThresholdController::class, 'destroy'])->name('thresholds.destroy');
 
     Route::get('notifications/poll', [NotificationController::class, 'poll']);
 });

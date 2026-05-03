@@ -10,36 +10,49 @@ class ThresholdController extends Controller
 {
     public function index(Request $request)
     {
-        $tickers = Ticker::all();
-        $thresholds = UserThreshold::where('user_id', $request->user()->id)->get()->keyBy('ticker_id');
+        $thresholds = UserThreshold::where('user_id', $request->user()->id)
+            ->with('ticker')
+            ->get();
 
-        return view('thresholds', compact('tickers', 'thresholds'));
+        $configuredIds = $thresholds->pluck('ticker_id');
+        $availableTickers = Ticker::whereNotIn('id', $configuredIds)->get();
+
+        return view('thresholds', compact('thresholds', 'availableTickers'));
     }
 
-    public function upsert(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'thresholds' => 'array',
-            'thresholds.*.ticker_id' => 'required|exists:tickers,id',
-            'thresholds.*.hci_high' => 'nullable|integer|min:0|max:100',
-            'thresholds.*.hci_low' => 'nullable|integer|min:0|max:100',
+            'ticker_id' => 'required|exists:tickers,id',
+            'hci_high'  => 'nullable|integer|min:1|max:100',
+            'hci_low'   => 'nullable|integer|min:0|max:99',
         ]);
 
-        foreach($request->input('thresholds', []) as $data) {
-            $high = $data['hci_high'] !== '' ? (int) $data['hci_high'] : null;
-            $low = $data['hci_low'] !== '' ? (int) $data['hci_low'] : null;
-
-            if ($high === null && $low === null) {
-                UserThreshold::where('user_id', $request->user()->id)->where('ticker_id', $data['ticker_id'])->delete();
-                continue;
-            }
-
-            UserThreshold::updateOrCreate(
-                ['user_id' => $request->user()->id, 'ticker_id' => $data['ticker_id']],
-                ['hci_high' => $high ?? 75, 'hci_low' => $low ?? 25]
-            );
+        if (UserThreshold::where('user_id', $request->user()->id)->count() >= 9) {
+            return back()->withErrors(['limit' => 'You have reached the maximum of 9 alerts.']);
         }
 
-        return back()->with('success', 'Alert thresholds saved.');
+        if (UserThreshold::where('user_id', $request->user()->id)->where('ticker_id', $request->ticker_id)->exists()) {
+            return back()->withErrors(['ticker_id' => 'An alert for this ticker already exists.']);
+        }
+
+        UserThreshold::create([
+            'user_id'   => $request->user()->id,
+            'ticker_id' => $request->ticker_id,
+            'hci_high'  => $request->hci_high ?: null,
+            'hci_low'   => $request->hci_low !== null && $request->hci_low !== '' ? (int) $request->hci_low : null,
+        ]);
+
+        return back()->with('success', 'Alert added.');
+    }
+
+    public function destroy(Request $request, UserThreshold $threshold)
+    {
+        if ($threshold->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        $threshold->delete();
+        return back()->with('success', 'Alert removed.');
     }
 }

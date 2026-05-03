@@ -31,7 +31,7 @@
     </nav>
 
     {{-- Notfication --}}
-    <div id="notification-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+    <div id="notification-container" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center"></div>
 
     {{-- Page content --}}
     <main class="max-w-7xl mx-auto px-6 py-10">
