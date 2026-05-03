@@ -37,4 +37,42 @@
         </div>
     </div>
     <p class="text-xs text-gray-400 mt-2">HCI Score: Hype Correlation Index</p>
+
+    {{-- Recently Searched --}}
+    <div class="mt-10 rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Recently Searched</h2>
+        </div>
+        @if($recentSearches->isEmpty())
+            <p class="px-6 py-8 text-center text-gray-400 text-sm">No searches yet.</p>
+        @else
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs tracking-wider">
+                    <tr>
+                        <th class="px-6 py-3 text-left">Ticker</th>
+                        <th class="px-6 py-3 text-right">Searched At</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($recentSearches as $search)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-3 font-semibold">
+                                @auth
+                                    <a href="{{ route('search') }}?ticker={{ $search->ticker->ticker }}" class="text-orange-500 hover:underline">
+                                        {{ $search->ticker->ticker }}
+                                    </a>
+                                @endauth
+                                @guest
+                                    {{ $search->ticker->ticker }}
+                                @endguest
+                            </td>
+                            <td class="px-6 py-3 text-right text-gray-400">
+                                {{ $search->searched_at->diffForHumans() }}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
 @endsection

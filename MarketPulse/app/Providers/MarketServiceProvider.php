@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\StockStrategy;
+use App\Services\SingleStockStrategy;
 use App\Services\RedditStrategy;
 use App\Services\RedditScraperStrategy;
 use App\Models\Snapshot;
@@ -23,6 +24,11 @@ class MarketServiceProvider extends ServiceProvider
                 'timeout' => 5.0,
             ]));
         });
+
+        $this->app->bind(Client::class, fn() => new Client([
+            'base_uri' => 'https://query1.finance.yahoo.com',
+            'timeout' => 5.0,
+        ]));
 
         $this->app->bind(RedditStrategy::class, function () {
             return new RedditStrategy(new Client([

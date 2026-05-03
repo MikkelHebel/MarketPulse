@@ -7,13 +7,23 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @auth
-        @vite(['resources/js/notifications.js'])
+        @vite(['resources/js/notifications.js', 'resources/js/search.js'])
     @endauth
 </head>
 <body class="bg-white text-gray-900 min-h-screen">
     {{-- Nav --}}
     <nav class="bg-orange-500 text-white px-6 py-4 flex items-center justify-between shadow">
-        <a href="{{ ('dashboard') }}" class="text-2xl font-bold tracking-tight">MarketPulse</a>
+        <a href="{{ route('dashboard') }}" class="text-2xl font-bold tracking-tight">MarketPulse</a>
+
+        <form method="GET" action="{{ route('search') }}">
+            @auth
+                <input type="text" name="ticker" placeholder="Search a ticker e.g. ASTS or ASML" class="w-80 bg-white text-gray-800 placeholder-gray-400 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
+            @endauth
+            @guest
+                <input type="text" placeholder="Search a ticker e.g. ASTS or ASML" disabled title="Only logged in users can use search" class="w-80 bg-white text-gray-800 placeholder-gray-400 rounded-lg px-4 py-2 text-sm opacity-60 cursor-not-allowed">
+            @endguest
+        </form>
+
         <div class="flex items-center gap-6 text-sm font-medium">
             <a href="{{ route('dashboard') }}" class="hover:text-orange-100">Dashboard</a>
             @auth

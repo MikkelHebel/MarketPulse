@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Ticker;
+use App\Models\RecentSearch;
 use App\Services\HypeCorrelationService;
 
 class DashboardController extends Controller
@@ -13,7 +14,9 @@ class DashboardController extends Controller
 
     public function index()
     {
-        return view('dashboard');
+        $recentSearches = RecentSearch::with('ticker')->latest('searched_at')->limit(25)->get();
+
+        return view('dashboard', compact('recentSearches'));
     }
 
     public function chartData(): JsonResponse

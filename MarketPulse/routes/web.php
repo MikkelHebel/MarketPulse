@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ThresholdController;
+use App\Http\Controllers\SearchController;
 
 Route::get('/', fn() => redirect('dashboard'));
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -22,5 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/thresholds', [ThresholdController::class, 'store'])->name('thresholds.store');
     Route::delete('/thresholds/{threshold}', [ThresholdController::class, 'destroy'])->name('thresholds.destroy');
 
-    Route::get('notifications/poll', [NotificationController::class, 'poll']);
+    Route::get('/notifications/poll', [NotificationController::class, 'poll']);
+
+    Route::get('/search', [SearchController::class, 'show'])->name('search');
+    Route::get('/search/data', [SearchController::class, 'data'])->name('search.data');
 });

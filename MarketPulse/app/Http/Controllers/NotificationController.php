@@ -9,8 +9,13 @@ class NotificationController extends Controller
 {
     public function poll(Request $request): JsonResponse
     {
-        $notifications = $request->user()->unreadNotifications->map(fn($n) => $n->data);
-        $request->user()->unreadNotifications->markAsRead();
-        return response()->json($notifications);
+        $unread = $request->user()->unreadNotifications;
+        $unread->markAsRead();
+
+        $deduped = $unread->unique(fn($n) => $n->data['ticker'].':'.$n->data['type'])
+            ->map(fn($n) => $n->data)
+            ->values();
+
+        return response()->json($deduped);
     }
 }
