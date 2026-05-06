@@ -41,7 +41,7 @@
     {{-- Recently Searched --}}
     <div class="mt-10 rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Recently Searched</h2>
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Recently Searched (Last 25 searches)</h2>
         </div>
         @if($recentSearches->isEmpty())
             <p class="px-6 py-8 text-center text-gray-400 text-sm">No searches yet.</p>

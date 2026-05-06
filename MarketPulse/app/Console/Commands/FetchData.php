@@ -8,11 +8,11 @@ use Illuminate\Console\Command;
 use App\Services\StockStrategy;
 use App\Services\RedditStrategy;
 use App\Services\RedditScraperStrategy;
+use App\Services\StockHistoryService;
 use App\Services\SentimentAnalyzer;
 use App\Models\Ticker;
 use App\Models\Snapshot;
 use App\Models\SentimentScore;
-
 #[Signature('app:fetch-data')]
 #[Description('Fetch stock and Reddit data')]
 class FetchData extends Command
@@ -20,7 +20,7 @@ class FetchData extends Command
     /**
      * Execute the console command.
      */
-    public function handle(StockStrategy $stock, RedditStrategy $reddit, RedditScraperStrategy $redditScraper, SentimentAnalyzer $analyzer): void
+    public function handle(StockStrategy $stock, RedditStrategy $reddit, RedditScraperStrategy $redditScraper, SentimentAnalyzer $analyzer, StockHistoryService $stockHistory): void
     {
         $results = $stock->fetch();
 
@@ -32,6 +32,7 @@ class FetchData extends Command
             if ($price === null) continue;
 
             $ticker = Ticker::firstOrCreate(['ticker' => $symbol]);
+            $stockHistory->getHistoryIfEmpty($ticker);
 
             Snapshot::create([
                 'ticker_id' => $ticker->id,

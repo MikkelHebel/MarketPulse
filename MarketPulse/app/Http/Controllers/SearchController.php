@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use GuzzleHttp\Client;
 use App\Models\Ticker;
 use App\Models\RecentSearch;
-use App\Services\SingleStockStrategy;
+use App\Services\StockHistoryService;
 
 class SearchController extends Controller
 {
-    public function __construct(private Client $client) {}
+    public function __construct(private StockHistoryService $history) {}
 
     public function show(Request $request)
     {
@@ -21,7 +20,6 @@ class SearchController extends Controller
 
         $ticker = strtoupper(trim($request->ticker));
         $tickerModel = Ticker::firstOrCreate(['ticker' => $ticker]);
-
         RecentSearch::create(['ticker_id' => $tickerModel->id]);
 
         return view('search', ['ticker' => $ticker]);
@@ -29,43 +27,33 @@ class SearchController extends Controller
 
     public function data(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'ticker' => 'required|string|max:10|alpha_dash',
         ]);
 
-        $ticker = strtoupper(trim($request->validated()['ticker']));
-        $tickerModel = Ticker::with([
-            'snapshots' => fn($q) => $q->latest('timestamp')->limit(60),
-            'sentimentScores' => fn($q) => $q->latest('timestamp')->limit(1),
-        ])->where('ticker', $ticker)->first();
+        $ticker = strtoupper(trim($validated['ticker']));
+        $tickerModel = Ticker::firstOrCreate(['ticker' => $ticker]);
 
+        $this->history->getHistoryIfEmpty($tickerModel);
 
-        if ($tickerModel) {
-            return response()->json([
-                'ticker' => $tickerModel->ticker,
-                'snapshots' => $tickerModel->snapshots,
-                'sentiment' => $tickerModel->sentimentScores->first()?->score,
-            ]);
-        } else {
-            $strategy = new SingleStockStrategy($this->client, $ticker);
-            $data = $strategy->fetch();
+        $snapshots = $tickerModel->snapshots()
+            ->latest('timestamp')
+            ->limit(288)
+            ->get();
 
-            $result = $data[$ticker]['chart']['result'][0] ?? null;
-            $snapshots = [];
-
-            if ($result) {
-                $timestamps = $result['timestamp'] ?? [];
-                $closes = $result['indicators']['quote'][0]['close'] ?? [];
-                foreach ($timestamps as $i => $ts) {
-                    $snapshots[] = ['price' => $closes[$i], 'timestamp' => date('Y-m-d H:i:s', $ts)];
-                }
-            }
-
-            return response()->json([
-                'ticker' => $ticker,
-                'snapshots' => $snapshots,
-                'sentiment' => null,
-            ]);
+        if ($snapshots->isEmpty()) {
+            return response()->json(['error' => "No data found for {$ticker}."], 404);
         }
+
+        $sentimentScores = $tickerModel->sentimentScores()
+            ->latest('timestamp')
+            ->limit(288)
+            ->get();
+
+        return response()->json([
+            'ticker'          => $ticker,
+            'snapshots'       => $snapshots,
+            'sentimentScores' => $sentimentScores,
+        ]);
     }
 }

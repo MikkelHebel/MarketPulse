@@ -30,8 +30,7 @@ To meet the exam requirements, the following pattern will be implemented:
 10. Authenticated users shall be able to search for any stock ticker and view a dedicated page with a price chart and sentiment data
 11. Users shall be able to toggle individual tickers on/off in the chart with "Select All" and "Deselect All" controls. The filter state persists across polling updates
 12. Authenticated users shall be able to configure per-ticker HCI alert thresholds (high and low). Notifications are delivered via frontend polling when thresholds are crossed
-13. Authenticated users shall be able to add up to 3 custom tickers to a watchlist so the scheduler fetches their data alongside the default 9
-14. The dashboard shall display a table of the 25 most recently searched stock tickers (across all users) at the bottom of the page, linking back to their search result
+13. The dashboard shall display a table of the 25 most recently searched stock tickers (across all users) at the bottom of the page, linking back to their search result
 
 ## Development Phases
 
@@ -62,8 +61,7 @@ To meet the exam requirements, the following pattern will be implemented:
 - [x] Chart ticker filter
 - [x] Notifications
 - [x] Show recent searches
-- [ ] Implement ticker search for authenticated users
-- [ ] Create a Watchlist users can add up to 3 custom tickers, the scheduler fetches their data alongside defaults
+- [x] Implement ticker search for authenticated users
 
 ### Phase 6: Testing
 - [ ] Write feature tests for data fetching and persistence

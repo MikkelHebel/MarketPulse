@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Ticker;
 use App\Models\UserThreshold;
+use App\Services\StockStrategy;
 
 class ThresholdController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, StockStrategy $stock)
     {
         $thresholds = UserThreshold::where('user_id', $request->user()->id)
             ->with('ticker')
             ->get();
 
         $configuredIds = $thresholds->pluck('ticker_id');
-        $availableTickers = Ticker::whereNotIn('id', $configuredIds)->get();
+        $availableTickers = Ticker::whereIn('ticker', $stock->tickers())
+            ->whereNotIn('id', $configuredIds)
+            ->get();
 
         return view('thresholds', compact('thresholds', 'availableTickers'));
     }

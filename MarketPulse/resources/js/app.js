@@ -128,5 +128,7 @@ function renderTable(tickers) {
     }).join('');
 }
 
-fetchData();
-setInterval(fetchData, 60000);
+if (document.getElementById('ticker-table')) {
+    fetchData();
+    setInterval(fetchData, 60000);
+}
