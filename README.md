@@ -64,9 +64,10 @@ To meet the exam requirements, the following pattern will be implemented:
 - [x] Implement ticker search for authenticated users
 
 ### Phase 6: Testing
-- [ ] Write feature tests for data fetching and persistence
-- [x] Write login tests
-- [ ] Write unit tests for `SentimentAnalyzer` and `Hype-Correlation-Index`
+- [x] Write unit tests for `SentimentAnalyzer`
+- [x] Write integration tests for `HypeCorrelationService`
+- [x] Write design pattern verification tests for `SnapshotObserver`
+- [x] Write auth and route protection tests
 
 ### Phase 7: Finalization
 - [ ] Create Class Diagrams for Strategy and Observer patterns
@@ -101,8 +102,19 @@ The HCI is calculated per ticker after each data fetch and passed to the Observe
 Laravel's `api.php` is stateless by default and expects token-based authentication (e.g. Sanctum or Passport). This project uses session-based authentication built on the `web` middleware stack (`Auth::attempt()`, cookies, CSRF). Placing the polling endpoints (`/chart/data`, `/notifications/poll`) in `web.php` means they automatically inherit session auth and the `auth` middleware — no extra token setup required. If a separate mobile app or SPA with token auth were added in the future, those routes would move to `api.php`.
 
 ### Reddit scraper fallback
-  `RedditStrategy` uses the OAuth API (requires credentials). If the API call fails (e.g. credentials not configured), `FetchData` catches the exception and falls back to
-  `RedditScraperStrategy`, which hits the public JSON endpoint at `reddit.com` with a browser-like User-Agent. This keeps data flowing during development before API credentials are approved.
+  `RedditStrategy` uses the OAuth API (requires credentials). If the API call fails (e.g. credentials not configured), `FetchData` catches the exception and falls back to `RedditScraperStrategy`, which hits the public JSON endpoint at `reddit.com` with a browser-like User-Agent. This keeps data flowing during development before API credentials are approved.
+
+## Testing
+
+The test suite is organized into four categories, each demonstrating a different testing concern:
+**Pure unit test — `tests/Unit/SentimentAnalyzerTest.php`**
+Tests `SentimentAnalyzer` in complete isolation: no database and no framework, no HTTP. The analyzer is a pure PHP class, so the tests instantiate it directly and assert on the return value. Covers neutral sentiment, bullish/bearish extremes, balanced scores, unknown tickers, and case-insensitivity.
+**Integration test with DB — `tests/Feature/HypeCorrelationTest.php`**
+Tests `HypeCorrelationService` against a real database. Verifies the HCI formula produces the correct scores, that it falls back to the sentiment score when fewer than two snapshots exist, and that it caps correctly at both 0 and 100.
+**Design pattern verification — `tests/Feature/SnapshotObserverTest.php`**
+Verifies the Observer pattern implementation. After seeding thresholds and a sentiment score, creating a `Snapshot` triggers the `SnapshotObserver`. The tests assert that `HciAlertNotification` is sent to the correct user depending on whether the HCI crosses the configured high/low threshold.
+**Auth and route protection — `tests/Feature/AuthTest.php` + `tests/Feature/RouteTest.php`**
+Verifies the authentication flow (register, login, logout) and that all the routes works as intended (e.g. redirect unauthenticated users for) to `/login` while remaining accessible to logged-in users.
 
 ## Snapshot frequency
 - **Stocks & WSB:** Every minute
