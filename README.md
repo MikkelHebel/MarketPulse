@@ -3,6 +3,29 @@
 ## Project Overview
 A web-based dashboard built with **Laravel** that tracks S&P 500, Nasdaq, and MAG-7 stock prices correlated with r/wallstreetbets sentiment analysis.
 
+## How to Run
+### Prerequisites
+Docker and Docker Compose must be installed.
+
+### Start the application
+Copy the example environment file and set a database password before starting:
+```bash
+cp .env.example .env
+```
+Open `.env` and set `DB_PASSWORD` to any password then:
+```bash
+docker compose up -d
+```
+
+The entrypoint automatically installs dependencies, builds assets, and runs migrations on startup. The app is available at **http://localhost:8080**.
+Add `--build` to rebuild the image after Dockerfile changes.
+
+### Run tests
+After the application has been started with docker compose run the following command:
+```bash
+docker compose exec laravel php artisan test
+```
+
 ## Tech Stack
 - **Framework:** Laravel
 - **Database:** PostgreSQL
@@ -34,28 +57,6 @@ Registered in `MarketServiceProvider`, it fires on every `Snapshot::created` Elo
 
 **Dependency Injection** — `app/Providers/MarketServiceProvider.php`
 All services and strategies are bound in the service container and injected into controllers and commands via constructor injection, avoiding direct instantiation and keeping classes decoupled.
-
-## How to Run
-### Prerequisites
-Docker and Docker Compose must be installed.
-
-### Start the application
-```bash
-docker compose up -d
-```
-
-The entrypoint automatically installs dependencies, builds assets, and runs migrations on startup. The app is available at **http://localhost:8080**.
-Add `--build` to rebuild the image after Dockerfile changes.
-
-### Run tests
-```bash
-cd MarketPulse && php artisan test
-```
-
-## Known Issues
-The three auth flow tests in `tests/Feature/AuthTest.php` fail with HTTP 419 when run inside Docker (`docker compose exec laravel php artisan test`) due to Docker environment variables overriding the test session configuration. All 30 tests pass when run locally with `php artisan test` from the `MarketPulse/` directory.
-
-Performance testing is not implemented. The test suite covers correctness (unit, integration, and pattern verification) but does not measure throughput, latency under load, or scheduler reliability under concurrent requests.
 
 ## Hype-Correlation-Index (HCI)
 

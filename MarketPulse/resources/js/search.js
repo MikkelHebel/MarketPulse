@@ -32,6 +32,10 @@ async function fetchData() {
 
         document.getElementById('search-loading').classList.add('hidden');
         container.classList.remove('hidden');
+
+        const el = document.getElementById('last-updated');
+        el.textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        el.classList.remove('hidden');
     } catch {
         showError(`Failed to load data for ${ticker}.`);
     }

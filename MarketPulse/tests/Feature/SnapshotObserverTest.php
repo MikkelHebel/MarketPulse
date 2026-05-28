@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Ticker;
 use App\Models\Snapshot;
 use App\Models\SentimentScore;
@@ -7,6 +8,12 @@ use App\Models\User;
 use App\Models\UserThreshold;
 use App\Notifications\HciAlertNotification;
 use Illuminate\Support\Facades\Notification;
+
+beforeEach(function () {
+    if (DB::getDriverName() === 'pgsql') {
+        DB::statement('ALTER TABLE notifications ALTER COLUMN data TYPE jsonb USING data::jsonb');
+    }
+});
 
 test('fires a hype notification when HCI meets or exceeds the high threshold', function () {
     Notification::fake();

@@ -3,7 +3,10 @@
 @section('content')
     <div class="flex items-center justify-between mb-8">
         <h1 class="text-3xl font-bold">{{ $ticker }}</h1>
-        <span class="text-sm text-gray-400">5-day price history (5m intervals)</span>
+        <div class="text-right">
+            <div class="text-sm text-gray-400">5-day price history (5m intervals)</div>
+            <div id="last-updated" class="text-xs text-gray-400 mt-1 hidden">Updated —</div>
+        </div>
     </div>
 
     {{-- Loading state --}}
