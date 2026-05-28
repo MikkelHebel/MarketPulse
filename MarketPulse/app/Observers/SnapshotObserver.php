@@ -25,9 +25,16 @@ class SnapshotObserver
         $thresholds = UserThreshold::whereHas('ticker', fn($q) => $q->where('ticker', $ticker))->get();
 
         foreach ($thresholds as $threshold) {
-            if ($threshold->hci_high !== null && $threshold->hci_high > 0 && $hci >= $threshold->hci_high) {
+            $lastNotification = $threshold->user->notifications()
+                ->where('data->ticker', $ticker)
+                ->latest()
+                ->first();
+
+            $lastType = $lastNotification?->data['type'] ?? null;
+
+            if ($threshold->hci_high !== null && $threshold->hci_high > 0 && $hci >= $threshold->hci_high && $lastType !== 'hype') {
                 $threshold->user->notify(new HciAlertNotification($ticker, $hci, 'hype'));
-            } elseif ($threshold->hci_low !== null && $hci <= $threshold->hci_low) {
+            } elseif ($threshold->hci_low !== null && $hci <= $threshold->hci_low && $lastType !== 'crash') {
                 $threshold->user->notify(new HciAlertNotification($ticker, $hci, 'crash'));
             }
         }

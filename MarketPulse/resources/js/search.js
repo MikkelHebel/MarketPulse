@@ -6,6 +6,9 @@ if (!container) return;
 
 const ticker = container.dataset.ticker;
 
+let priceChart = null;
+let analysisChart = null;
+
 function showError(message) {
     document.getElementById('search-loading').innerHTML =
         `<p class="text-red-400 text-lg">${message}</p>`;
@@ -40,7 +43,14 @@ function renderPriceChart(snapshots) {
     );
     const prices = snapshots.map(s => parseFloat(s.price));
 
-    new Chart(document.getElementById('price-chart'), {
+    if (priceChart) {
+        priceChart.data.labels = labels;
+        priceChart.data.datasets[0].data = prices;
+        priceChart.update();
+        return;
+    }
+
+    priceChart = new Chart(document.getElementById('price-chart'), {
         type: 'line',
         data: {
             labels,
@@ -73,7 +83,15 @@ function renderAnalysisChart(snapshots, sentimentScores) {
     const sentimentRaw  = sentimentScores.map(s => parseFloat(s.score));
     const sentimentData = Array.from({ length: prices.length }, (_, i) => sentimentRaw[i] ?? null);
 
-    new Chart(document.getElementById('pct-chart'), {
+    if (analysisChart) {
+        analysisChart.data.labels = labels;
+        analysisChart.data.datasets[0].data = pctData;
+        analysisChart.data.datasets[1].data = sentimentData;
+        analysisChart.update();
+        return;
+    }
+
+    analysisChart = new Chart(document.getElementById('pct-chart'), {
         type: 'line',
         data: {
             labels,
@@ -117,3 +135,4 @@ function renderAnalysisChart(snapshots, sentimentScores) {
 }
 
 fetchData();
+setInterval(fetchData, 5000);
