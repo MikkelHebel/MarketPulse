@@ -20,6 +20,16 @@ docker compose up -d
 The entrypoint automatically installs dependencies, builds assets, and runs migrations on startup. The app is available at **http://localhost:8080**.
 Add `--build` to rebuild the image after Dockerfile changes.
 
+> **Note:** The first startup takes a minute or two while the entrypoint installs dependencies and builds assets. If the app is not yet available, wait a moment and refresh.
+> **Note:** Once the app is running, data may take up to 1 minute to appear on the dashboard while the scheduler completes its first fetch.
+
+### Troubleshooting
+**password authentication failed for user "laravel"**
+An existing postgres Docker volume (from any previous project) is conflicting with the new container. Remove unused volumes and restart:
+```bash
+docker compose down -v && docker compose up -d
+```
+
 ### Run tests
 After the application has been started with docker compose run the following command:
 ```bash
